@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alarm Clock</title>
+  <style>
+    body {
+      background-image: url('clock.jpg'); 
+      background-size: cover;
+      background-position: center;
+      margin: 0;
+      padding: 0; 
+      font-family: Arial, sans-serif; 
+    }
+    .clock {
+      width: 300px;
+      margin: 50px auto;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      text-align: center;
+    }
+
+    .input-container {
+      margin-bottom: 10px;
+    }
+
+    input[type="number"], button {
+      margin: 5px;
+      padding: 5px;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    #timer {
+      font-size: 24px;
+      margin-top: 20px;
+      color:aliceblue
+    }
+  </style>
+</head>
+<body>
+  <div class="clock">
+    <div class="input-container">
+      <input type="number" id="minutes" placeholder="Phút" min="0">
+      <input type="number" id="seconds" placeholder="Giây" min="0" max="59">
+    </div>
+    <div class="buttons">
+      <button id="startBtn">START</button>
+      <button id="resetBtn">RESET</button>
+    </div>
+    <div id="timer">00:00</div>
+  </div>
+  <audio id="alarm">
+    <source src="baothuc.mp3" type="audio/mp3">
+  </audio>
+  <script>
+    const timerDisplay = document.getElementById('timer');
+    const startBtn = document.getElementById('startBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const alarmSound = document.getElementById('alarm');
+    let timer;
+
+    startBtn.addEventListener('click', () => {
+      startBtn.style.display = 'none';
+      resetBtn.style.display = 'inline-block';
+      let minutes = parseInt(document.getElementById('minutes').value);
+      let seconds = parseInt(document.getElementById('seconds').value);
+      if (isNaN(minutes) || isNaN(seconds)) {
+        alert('Thời gian nhập không hợp lệ.');
+        return;
+      }
+      const totalTime = (minutes * 60) + seconds;
+      startTimer(totalTime);
+    });
+
+    resetBtn.addEventListener('click', () => {
+      clearInterval(timer);
+      startBtn.style.display = 'inline-block';
+      resetBtn.style.display = 'none';
+      timerDisplay.textContent = '00:00';
+    });
+
+    function startTimer(totalSeconds) {
+      let remainingTime = totalSeconds;
+      timer = setInterval(() => {
+        const minutes = Math.floor(remainingTime / 60);
+        const seconds = remainingTime % 60;
+        const displayMinutes = minutes < 10 ? '0' + minutes : minutes;
+        const displaySeconds = seconds < 10 ? '0' + seconds : seconds;
+        timerDisplay.textContent = `${displayMinutes}:${displaySeconds}`;
+        
+        if (remainingTime <= 0) {
+          clearInterval(timer);
+          alarmSound.play();
+        }
+        
+        remainingTime--;
+      }, 1000);
+    }
+  </script>
+</body>
+</html>
